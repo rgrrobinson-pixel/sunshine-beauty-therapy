@@ -46,6 +46,7 @@ export type SiteSettings = {
   reviewsUrl: string;
   termsUrl: string;
   logoUrl: string;
+  portraitSize?: "standard" | "compact";
 };
 
 export async function getTreatments(): Promise<Treatment[]> {

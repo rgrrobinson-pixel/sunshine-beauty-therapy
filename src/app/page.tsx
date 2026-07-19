@@ -50,6 +50,7 @@ export default async function Home() {
           phone={settings.phone}
           phoneHref={settings.phoneHref}
           email={settings.email}
+          portraitSize={settings.portraitSize}
         />
         <SanctuaryBanner />
         <Treatments treatments={treatments} />

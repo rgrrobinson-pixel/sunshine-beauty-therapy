@@ -8,6 +8,7 @@ export default function About({
   phone,
   phoneHref,
   email,
+  portraitSize = "compact",
 }: {
   intro: string;
   massage: string;
@@ -16,11 +17,14 @@ export default function About({
   phone: string;
   phoneHref: string;
   email: string;
+  portraitSize?: "standard" | "compact";
 }) {
+  const sizeClass = portraitSize === "standard" ? "max-w-md" : "max-w-[340px]";
+
   return (
     <section id="about" className="max-w-content mx-auto px-6 py-20 sm:py-28">
       <div className="grid md:grid-cols-2 gap-12 items-center">
-        <div className="relative aspect-[4/5] w-full max-w-md mx-auto md:mx-0">
+        <div className={`relative aspect-[4/5] w-full ${sizeClass} mx-auto md:mx-0`}>
           <Image
             src="/jane-original.jpg"
             alt="Jane Guthrie, principal of Sunshine Beauty Therapy"
