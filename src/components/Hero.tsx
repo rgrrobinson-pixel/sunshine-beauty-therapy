@@ -29,7 +29,7 @@ export default function Hero({
           priority
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/15 to-black/5" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/8 to-transparent" />
 
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
           <p className="eyebrow text-cream-100/90" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}>
