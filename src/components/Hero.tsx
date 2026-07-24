@@ -9,15 +9,12 @@ const BADGES = [
 ];
 
 export default function Hero({
-  headline,
-  highlight,
   subtext,
-  logoUrl,
 }: {
-  headline: string;
-  highlight: string;
+  headline?: string;
+  highlight?: string;
   subtext: string;
-  logoUrl: string;
+  logoUrl?: string;
 }) {
   return (
     <section className="relative">
@@ -38,28 +35,35 @@ export default function Hero({
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-transparent" />
 
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
-          <p
-            className="uppercase tracking-widest text-sm font-semibold text-white"
-            style={{ textShadow: "0 2px 8px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,1)" }}
-          >
-            Sunshine Coast · Private Studio
-          </p>
-
+          {/* Main headline */}
           <h1
-            className="mt-4 max-w-3xl text-white"
+            className="text-white"
             style={{
               fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: "clamp(2.6rem, 5.5vw, 4rem)",
+              fontSize: "clamp(2.8rem, 6vw, 4.4rem)",
               fontWeight: 800,
-              lineHeight: 1.15,
+              lineHeight: 1.1,
               textShadow: "0 4px 20px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)",
             }}
           >
-            {headline}{" "}
-            <span style={{ fontStyle: "italic", fontWeight: 700, color: "#fdfcf9" }}>
-              {highlight}
-            </span>
+            Sunshine Beauty Therapy
           </h1>
+
+          {/* Subtitle — marginally smaller */}
+          <p
+            className="mt-3 text-white"
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: "clamp(2rem, 4vw, 3rem)",
+              fontWeight: 700,
+              fontStyle: "italic",
+              lineHeight: 1.2,
+              textShadow: "0 3px 16px rgba(0,0,0,0.95), 0 2px 6px rgba(0,0,0,0.9)",
+              color: "#fdfcf9",
+            }}
+          >
+            Certified Organic Skincare
+          </p>
 
           <p
             className="mt-6 max-w-xl text-base sm:text-lg font-semibold text-white"
