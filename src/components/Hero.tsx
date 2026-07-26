@@ -19,10 +19,10 @@ export default function Hero({
   return (
     <section className="relative">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&display=swap');
       `}</style>
 
-      <div className="relative w-full overflow-hidden" style={{ height: "90vh", minHeight: "640px" }}>
+      <div className="relative w-full overflow-hidden" style={{ height: "92vh", minHeight: "660px" }}>
         <Image
           src="/hero-bg.jpg"
           alt="Serene spa garden sanctuary with water feature"
@@ -34,8 +34,9 @@ export default function Hero({
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-transparent" />
 
         <div className="relative z-10 flex h-full flex-col px-6 text-center text-white">
-          {/* Text block centred in the upper 60% of the hero */}
-          <div className="flex flex-col items-center justify-center px-6 text-center" style={{ flex: "0 0 60%" }}>
+
+          {/* Text block — upper 55% */}
+          <div className="flex flex-col items-center justify-center px-6 text-center" style={{ flex: "0 0 55%" }}>
             <h1
               className="text-white"
               style={{
@@ -49,13 +50,14 @@ export default function Hero({
               Sunshine Beauty Therapy
             </h1>
 
+            {/* Subtitle — plain (not italic) */}
             <p
               className="mt-8 text-white"
               style={{
                 fontFamily: "'Playfair Display', Georgia, serif",
                 fontSize: "clamp(2rem, 4vw, 3rem)",
                 fontWeight: 700,
-                fontStyle: "italic",
+                fontStyle: "normal",
                 lineHeight: 1.2,
                 textShadow: "0 3px 16px rgba(0,0,0,0.95), 0 2px 6px rgba(0,0,0,0.9)",
                 color: "#fdfcf9",
@@ -72,8 +74,8 @@ export default function Hero({
             </p>
           </div>
 
-          {/* Buttons in the lower 40% — well below the fountain bowl lip */}
-          <div className="flex flex-col items-center justify-end gap-4 pb-8" style={{ flex: "0 0 40%" }}>
+          {/* Buttons — lower 45%, pinned to very bottom */}
+          <div className="flex flex-col items-center justify-end gap-4 pb-10" style={{ flex: "0 0 45%" }}>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/book" className="btn-primary">
                 Book Your Treatment
