@@ -36,7 +36,7 @@ export default function Hero({
         <div className="relative z-10 flex h-full flex-col px-6 text-center text-white">
 
           {/* Text block — upper 55% */}
-          <div className="flex flex-col items-center justify-center px-6 text-center" style={{ flex: "0 0 55%" }}>
+          <div className="flex flex-col items-center justify-center px-6 text-center" style={{ flex: "0 0 50%" }}>
             <h1
               className="text-white"
               style={{
@@ -75,7 +75,7 @@ export default function Hero({
           </div>
 
           {/* Buttons — lower 45%, pinned to very bottom */}
-          <div className="flex flex-col items-center justify-end gap-4 pb-10" style={{ flex: "0 0 45%" }}>
+          <div className="flex flex-col items-center justify-end gap-4 pb-6" style={{ flex: "0 0 50%" }}>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/book" className="btn-primary">
                 Book Your Treatment
