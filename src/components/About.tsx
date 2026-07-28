@@ -70,7 +70,7 @@ export default function About({
       {/* Treatment room photo */}
       <div className="mt-14 relative w-full overflow-hidden rounded-2xl shadow-md" style={{ height: "480px" }}>
         <Image
-          src="/treatment-room.jpg"
+          src="/treatment-room-2026.jpg"
           alt="The Sunshine Beauty Therapy treatment room — serene, private and fully equipped"
           fill
           className="object-cover object-center"
