@@ -7,7 +7,7 @@ export default function Treatments({ treatments }: { treatments: Treatment[] }) 
     <section id="services" className="relative py-20 sm:py-28">
       <div className="absolute inset-0">
         <Image
-          src="https://images.stockcake.com/public/5/5/e/55e80e3a-a648-4a79-ac8b-525d95bcd08a_large/tropical-spa-retreat-stockcake.jpg"
+          src="/treatment-room.jpg"
           alt=""
           fill
           className="object-cover"
