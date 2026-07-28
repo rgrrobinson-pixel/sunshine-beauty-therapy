@@ -5,7 +5,7 @@ export default function CtaSection({ phone, phoneHref }: { phone: string; phoneH
   return (
     <section className="relative h-96 w-full overflow-hidden">
       <Image
-        src="/treatment-room-2026.jpg"
+        src="/treatment-room.jpg"
         alt="Sunshine Beauty Therapy treatment room"
         fill
         className="object-cover"
