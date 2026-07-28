@@ -8,7 +8,7 @@ export default function Treatments({ treatments }: { treatments: Treatment[] }) 
       <div className="absolute inset-0" style={{ backgroundColor: "rgba(250, 248, 243, 1)" }} />
 
       <div className="relative max-w-content mx-auto px-6">
-        <div className="max-w-2xl text-center">
+        <div className="max-w-2xl mx-auto text-center">
           <p className="eyebrow">Signature Treatments</p>
           <h2 className="section-heading mt-3">
             Crafted for your complete rejuvenation
