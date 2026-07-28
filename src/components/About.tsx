@@ -19,7 +19,7 @@ export default function About({
   portraitSize?: "standard" | "compact";
 }) {
   return (
-    <section id="about" className="max-w-content mx-auto px-6 py-20 sm:py-28">
+    <section id="about" className="max-w-content mx-auto px-6 pt-20 sm:pt-28 pb-0">
       <p className="eyebrow text-center">Welcome to Sunshine Beauty Therapy</p>
       <h2 className="section-heading mt-3 text-center">
         A personal touch in every treatment
