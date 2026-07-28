@@ -1,7 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
-import SanctuaryBanner from "@/components/SanctuaryBanner";
 import Treatments from "@/components/Treatments";
 import Skincare from "@/components/Skincare";
 import Testimonials from "@/components/Testimonials";
@@ -52,7 +51,6 @@ export default async function Home() {
           email={settings.email}
           portraitSize={settings.portraitSize}
         />
-        <SanctuaryBanner />
         <Treatments treatments={treatments} />
         <Skincare products={featuredProducts} />
         <Testimonials
