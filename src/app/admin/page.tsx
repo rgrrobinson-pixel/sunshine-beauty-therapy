@@ -85,7 +85,13 @@ export default function AdminPage() {
       const res = await fetch("/api/admin/data", {
         headers: { "x-admin-password": password },
       });
-      if (!res.ok) { setAuthError(true); setLoading(false); return; }
+      if (res.status === 401) { setAuthError(true); setLoading(false); return; }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert("Dashboard error: " + (err.detail || err.error || "Unknown error. Please try again."));
+        setLoading(false);
+        return;
+      }
       const data = await res.json();
       setOrders(data.orders ?? []);
       setVouchers(data.vouchers ?? []);
@@ -148,7 +154,7 @@ export default function AdminPage() {
               className="w-full border border-[#ddd8ce] rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#4d7355]"
               autoFocus
             />
-            {authError && <p className="text-red-500 text-sm">Incorrect password</p>}
+            {authError && <p className="text-red-500 text-sm">Incorrect password — please try again</p>}
             <button
               type="submit"
               disabled={loading}
