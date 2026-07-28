@@ -5,15 +5,7 @@ import type { Treatment } from "@/sanity/queries";
 export default function Treatments({ treatments }: { treatments: Treatment[] }) {
   return (
     <section id="services" className="relative py-20 sm:py-28">
-      <div className="absolute inset-0">
-        <Image
-          src="/treatment-room.jpg"
-          alt=""
-          fill
-          className="object-cover"
-        />
-        <div className="absolute inset-0" style={{ backgroundColor: "rgba(250, 248, 243, 0.93)" }} />
-      </div>
+      <div className="absolute inset-0" style={{ backgroundColor: "rgba(250, 248, 243, 1)" }} />
 
       <div className="relative max-w-content mx-auto px-6">
         <div className="max-w-2xl">
