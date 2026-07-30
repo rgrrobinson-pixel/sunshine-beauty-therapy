@@ -2,11 +2,14 @@ import Link from "next/link";
 import type { Treatment } from "@/sanity/queries";
 import { TREATMENT_DETAILS } from "@/lib/treatments";
 
-// Map Sanity treatment names to local slugs
+// Map treatment names to local slugs
 function slugForTreatment(name: string): string | null {
+  const n = name.toLowerCase().trim();
   const match = TREATMENT_DETAILS.find(
-    (t) => t.name.toLowerCase() === name.toLowerCase() ||
-           name.toLowerCase().includes(t.slug.replace(/-/g, " "))
+    (t) =>
+      t.name.toLowerCase() === n ||
+      n.includes(t.name.toLowerCase()) ||
+      t.name.toLowerCase().includes(n)
   );
   return match?.slug ?? null;
 }
