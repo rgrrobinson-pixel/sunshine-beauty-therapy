@@ -126,7 +126,7 @@ export const TREATMENT_DETAILS: TreatmentDetail[] = [
     ],
     totalValue: "$348.00",
     price: "A$209",
-    note: "Microdermabrasion additional $10.00",
+    note: null,
     imageUrl: "/treatment-room.jpg",
   },
   {
@@ -146,7 +146,7 @@ export const TREATMENT_DETAILS: TreatmentDetail[] = [
     ],
     totalValue: "$337.00",
     price: "A$209",
-    note: "Microdermabrasion additional $10.00",
+    note: null,
     imageUrl: "/treatment-room.jpg",
   },
 ];
