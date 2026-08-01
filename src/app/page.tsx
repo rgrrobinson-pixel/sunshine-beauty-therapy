@@ -14,18 +14,20 @@ import {
   getTestimonials,
   getSkincareProducts,
   getGalleryImages,
+  getSkinTypes,
 } from "@/sanity/queries";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [settings, treatments, testimonials, products, galleryImages] =
+  const [settings, treatments, testimonials, products, galleryImages, skinTypes] =
     await Promise.all([
       getSiteSettings(),
       getTreatments(),
       getTestimonials(),
       getSkincareProducts(),
       getGalleryImages(),
+      getSkinTypes(),
     ]);
 
   const featuredProducts = products.filter((p) => p.section === "featured");
@@ -52,7 +54,7 @@ export default async function Home() {
           portraitSize={settings.portraitSize}
         />
         <Treatments treatments={treatments} />
-        <Skincare products={featuredProducts} />
+        <Skincare products={featuredProducts} skinTypes={skinTypes} />
         <Testimonials
           testimonials={testimonials}
           products={stripProducts}
