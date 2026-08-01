@@ -123,6 +123,54 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   );
 }
 
+export type SkinProduct = {
+  _key: string;
+  name: string;
+  price: string;
+  size: string;
+  description: string;
+  keyIngredients: string;
+  imageUrl: string;
+};
+
+export type SkinType = {
+  _id: string;
+  slug: string;
+  order: number;
+  heading: string;
+  description: string;
+  dailyRoutinePdf: string;
+  products: SkinProduct[];
+};
+
+export async function getSkinTypes(): Promise<SkinType[]> {
+  return safeQuery(
+    () =>
+      client.fetch(
+        `*[_type == "skinType"] | order(order asc){
+          _id,
+          "slug": slug.current,
+          order,
+          heading,
+          description,
+          dailyRoutinePdf,
+          "products": products[]{
+            _key,
+            name,
+            price,
+            size,
+            description,
+            keyIngredients,
+            "imageUrl": imageUrl
+          }
+        }`,
+        {},
+        { cache: "no-store" }
+      ),
+    []
+  );
+}
+
 export async function getGalleryImages(): Promise<GalleryImage[]> {
   return safeQuery(
     () =>
