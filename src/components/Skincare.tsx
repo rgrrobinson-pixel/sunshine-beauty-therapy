@@ -126,9 +126,6 @@ export default function Skincare({ products }: { products: SkincareProduct[] }) 
                         alt={product.name}
                         fill
                         className="object-contain p-3"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = "none";
-                        }}
                       />
                     </div>
                     <div className="p-3 flex-1 flex flex-col">
