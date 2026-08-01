@@ -49,38 +49,88 @@ export type SiteSettings = {
   portraitSize?: "standard" | "compact";
 };
 
+// Safe fallback used when Sanity is unavailable (e.g. expired token)
+const DEFAULT_SETTINGS: SiteSettings = {
+  heroHeadline: "Sunshine Beauty Therapy",
+  heroHighlight: "",
+  heroSubtext: "Certified Organic Skincare",
+  aboutIntro: "Welcome to Sunshine Beauty Therapy",
+  aboutMassage: "",
+  aboutBio: "",
+  guaranteeQuote: "",
+  phone: "0416 144 999",
+  phoneHref: "tel:0416144999",
+  email: "jane@sunshinebeautytherapy.com.au",
+  bookingUrl: "https://smartscheduling.com/janeguthrie",
+  giftCertificateUrl: "",
+  reviewsUrl: "",
+  termsUrl: "",
+  logoUrl: "",
+  portraitSize: "standard",
+};
+
+async function safeQuery<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+  try {
+    const result = await fn();
+    return result ?? fallback;
+  } catch (err) {
+    console.error("[Sanity] Query failed, using fallback:", err);
+    return fallback;
+  }
+}
+
 export async function getTreatments(): Promise<Treatment[]> {
-  return client.fetch(
-    `*[_type == "treatment"] | order(order asc){ _id, name, duration, tag, description, price }`,
-    {},
-    { cache: "no-store" }
+  return safeQuery(
+    () =>
+      client.fetch(
+        `*[_type == "treatment"] | order(order asc){ _id, name, duration, tag, description, price }`,
+        {},
+        { cache: "no-store" }
+      ),
+    []
   );
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
-  return client.fetch(
-    `*[_type == "testimonial"] | order(order asc){ _id, quote, name, location }`,
-    {},
-    { cache: "no-store" }
+  return safeQuery(
+    () =>
+      client.fetch(
+        `*[_type == "testimonial"] | order(order asc){ _id, quote, name, location }`,
+        {},
+        { cache: "no-store" }
+      ),
+    []
   );
 }
 
 export async function getSkincareProducts(): Promise<SkincareProduct[]> {
-  return client.fetch(
-    `*[_type == "skincareProduct"] | order(order asc){ _id, name, "imageUrl": coalesce(image.asset->url, imageUrl), section }`,
-    {},
-    { cache: "no-store" }
+  return safeQuery(
+    () =>
+      client.fetch(
+        `*[_type == "skincareProduct"] | order(order asc){ _id, name, "imageUrl": coalesce(image.asset->url, imageUrl), section }`,
+        {},
+        { cache: "no-store" }
+      ),
+    []
   );
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
-  return client.fetch(`*[_type == "siteSettings"][0]`, {}, { cache: "no-store" });
+  return safeQuery(
+    () =>
+      client.fetch(`*[_type == "siteSettings"][0]`, {}, { cache: "no-store" }),
+    DEFAULT_SETTINGS
+  );
 }
 
 export async function getGalleryImages(): Promise<GalleryImage[]> {
-  return client.fetch(
-    `*[_type == "galleryImage"] | order(order asc){ _id, caption, featured, "imageUrl": image.asset->url }`,
-    {},
-    { cache: "no-store" }
+  return safeQuery(
+    () =>
+      client.fetch(
+        `*[_type == "galleryImage"] | order(order asc){ _id, caption, featured, "imageUrl": image.asset->url }`,
+        {},
+        { cache: "no-store" }
+      ),
+    []
   );
 }
