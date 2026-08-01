@@ -143,6 +143,44 @@ export type SkinType = {
   products: SkinProduct[];
 };
 
+export type TreatmentInclusion = {
+  _key: string;
+  name: string;
+  value: string;
+};
+
+export type TreatmentDetailSanity = {
+  _id: string;
+  slug: string;
+  tagline: string;
+  description: string;
+  inclusions: TreatmentInclusion[];
+  totalValue: string | null;
+  note: string | null;
+  terms: { _key: string; text: string }[];
+};
+
+export async function getTreatmentDetail(slug: string): Promise<TreatmentDetailSanity | null> {
+  return safeQuery(
+    () =>
+      client.fetch(
+        `*[_type == "treatmentDetail" && slug.current == $slug][0]{
+          _id,
+          "slug": slug.current,
+          tagline,
+          description,
+          "inclusions": inclusions[]{ _key, name, value },
+          totalValue,
+          note,
+          "terms": terms[]{ _key, text }
+        }`,
+        { slug },
+        { cache: "no-store" }
+      ),
+    null
+  );
+}
+
 export async function getSkinTypes(): Promise<SkinType[]> {
   return safeQuery(
     () =>
