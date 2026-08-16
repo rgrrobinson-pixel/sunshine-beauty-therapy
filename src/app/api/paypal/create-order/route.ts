@@ -8,18 +8,20 @@ const MAX_VOUCHER_AMOUNT = 1000;
 
 export async function POST(req: NextRequest) {
   try {
-    console.error("DIAGNOSTIC - PAYPAL_ENV:", JSON.stringify(process.env.PAYPAL_ENV));
-    console.error("DIAGNOSTIC - NEXT_PUBLIC_PAYPAL_CLIENT_ID:", process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ? `${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID.slice(0, 10)}...${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID.slice(-10)}` : "MISSING");
-    console.error("DIAGNOSTIC - PAYPAL_CLIENT_ID:", process.env.PAYPAL_CLIENT_ID ? `${process.env.PAYPAL_CLIENT_ID.slice(0, 10)}...${process.env.PAYPAL_CLIENT_ID.slice(-10)}` : "MISSING");
-    console.error("DIAGNOSTIC - PAYPAL_CLIENT_SECRET:", process.env.PAYPAL_CLIENT_SECRET ? `${process.env.PAYPAL_CLIENT_SECRET.slice(0, 5)}...${process.env.PAYPAL_CLIENT_SECRET.slice(-5)}` : "MISSING");
     const body = await req.json();
     const {
       voucherType,
       treatmentId,
       amount,
       purchaserName,
+      purchaserFirstName,
+      purchaserLastName,
       purchaserEmail,
       recipientName,
+      recipientFirstName,
+      recipientLastName,
+      recipientEmail,
+      sendToRecipient,
       message,
     } = body ?? {};
 
@@ -32,7 +34,6 @@ export async function POST(req: NextRequest) {
 
     let finalAmount: number;
     let itemName: string;
-
     let treatmentName: string | undefined;
     let treatmentDescription: string | undefined;
     let treatmentDuration: string | undefined;
@@ -44,48 +45,42 @@ export async function POST(req: NextRequest) {
         { cache: "no-store" }
       );
       if (!treatment) {
-        return NextResponse.json(
-          { error: "Treatment not found" },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: "Treatment not found" }, { status: 404 });
       }
       treatmentName = treatment.name;
       treatmentDescription = treatment.description;
       treatmentDuration = treatment.duration;
-      // price is stored like "A$99" — extract the number
       finalAmount = parseFloat(String(treatment.price).replace(/[^0-9.]/g, ""));
       itemName = `Gift Voucher — ${treatment.name}`;
     } else if (voucherType === "amount") {
       finalAmount = Number(amount);
-      if (
-        !Number.isFinite(finalAmount) ||
-        finalAmount < MIN_VOUCHER_AMOUNT ||
-        finalAmount > MAX_VOUCHER_AMOUNT
-      ) {
+      if (!Number.isFinite(finalAmount) || finalAmount < MIN_VOUCHER_AMOUNT || finalAmount > MAX_VOUCHER_AMOUNT) {
         return NextResponse.json(
-          {
-            error: `Amount must be between A$${MIN_VOUCHER_AMOUNT} and A$${MAX_VOUCHER_AMOUNT}`,
-          },
+          { error: `Amount must be between A$${MIN_VOUCHER_AMOUNT} and A$${MAX_VOUCHER_AMOUNT}` },
           { status: 400 }
         );
       }
       itemName = `Gift Voucher — A$${finalAmount.toFixed(2)}`;
     } else {
-      return NextResponse.json(
-        { error: "voucherType must be 'treatment' or 'amount'" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "voucherType must be 'treatment' or 'amount'" }, { status: 400 });
     }
 
-    // Create a pending order record first so we always have a paper trail,
-    // even if the buyer never completes payment.
+    // Create pending order record — paper trail even if buyer abandons
     const orderDoc = await writeClient.create({
       _type: "order",
       orderType: "voucher",
       itemName,
       amount: finalAmount,
       customerName: purchaserName,
+      customerFirstName: purchaserFirstName ?? undefined,
+      customerLastName: purchaserLastName ?? undefined,
       customerEmail: purchaserEmail,
+      recipientName: recipientName ?? undefined,
+      recipientFirstName: recipientFirstName ?? undefined,
+      recipientLastName: recipientLastName ?? undefined,
+      recipientEmail: sendToRecipient ? (recipientEmail ?? undefined) : undefined,
+      sendToRecipient: sendToRecipient ?? false,
+      giftMessage: message ?? undefined,
       treatmentName,
       treatmentDescription,
       treatmentDuration,
@@ -101,10 +96,7 @@ export async function POST(req: NextRequest) {
       referenceId: orderDoc._id,
     });
 
-    await writeClient
-      .patch(orderDoc._id)
-      .set({ paypalOrderId: paypalOrder.id })
-      .commit();
+    await writeClient.patch(orderDoc._id).set({ paypalOrderId: paypalOrder.id }).commit();
 
     return NextResponse.json({
       paypalOrderId: paypalOrder.id,
@@ -117,8 +109,14 @@ export async function POST(req: NextRequest) {
         treatmentDuration: treatmentDuration ?? null,
         amount: finalAmount,
         purchaserName,
+        purchaserFirstName: purchaserFirstName ?? null,
+        purchaserLastName: purchaserLastName ?? null,
         purchaserEmail,
         recipientName: recipientName ?? null,
+        recipientFirstName: recipientFirstName ?? null,
+        recipientLastName: recipientLastName ?? null,
+        recipientEmail: sendToRecipient ? (recipientEmail ?? null) : null,
+        sendToRecipient: sendToRecipient ?? false,
         message: message ?? null,
       },
     });
