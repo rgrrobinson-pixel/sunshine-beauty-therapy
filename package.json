@@ -13,6 +13,8 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "next-sanity": "^9",
+    "sanity": "^3",
+    "@sanity/vision": "^3",
     "@paypal/react-paypal-js": "^8.7.0"
   },
   "devDependencies": {
