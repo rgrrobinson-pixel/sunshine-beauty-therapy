@@ -30,18 +30,21 @@ export async function GET(req: NextRequest) {
     const [orders, vouchers] = await Promise.all([
       sanityFetch(
         `*[_type == "order"] | order(createdAt desc){
-          _id, createdAt, itemName, amount, customerName, customerEmail,
+          _id, createdAt, itemName, amount,
+          customerName, customerFirstName, customerLastName, customerEmail,
           status, emailSent, paypalOrderId, paypalCaptureId,
-          orderType, voucherType, treatmentName, recipientName, giftMessage,
-          billingAddress,
+          orderType, voucherType, treatmentName,
+          recipientName, recipientFirstName, recipientLastName, recipientEmail,
+          sendToRecipient, giftMessage, billingAddress,
           "voucherCode": giftVoucher->code
         }`
       ),
       sanityFetch(
         `*[_type == "giftVoucher"] | order(purchasedAt desc){
-          _id, code, voucherType, amount, treatmentName,
-          purchaserName, purchaserEmail, recipientName, message,
-          status, purchasedAt, expiresAt, paypalCaptureId
+          _id, code, sequenceNumber, voucherType, amount, treatmentName,
+          purchaserName, purchaserFirstName, purchaserEmail,
+          recipientName, recipientFirstName, recipientLastName, recipientEmail,
+          message, status, purchasedAt, expiresAt, paypalCaptureId
         }`
       ),
     ]);
