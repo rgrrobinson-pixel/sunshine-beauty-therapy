@@ -51,9 +51,13 @@ export async function fulfillOrder(sanityOrderId: string, paypalCaptureId: strin
       voucherType: order.voucherType ?? "amount",
       amount: order.amount,
       purchaserName: order.customerName,
+      purchaserFirstName: order.customerFirstName ?? undefined,
       purchaserEmail: order.customerEmail,
-      recipientName: order.recipientName,
-      message: order.giftMessage,
+      recipientName: order.recipientName ?? undefined,
+      recipientFirstName: order.recipientFirstName ?? undefined,
+      recipientLastName: order.recipientLastName ?? undefined,
+      recipientEmail: order.recipientEmail ?? undefined,
+      message: order.giftMessage ?? undefined,
       treatmentName: order.treatmentName ?? undefined,
       treatmentDescription: order.treatmentDescription ?? undefined,
       treatmentDuration: order.treatmentDuration ?? undefined,
@@ -115,14 +119,16 @@ export async function fulfillOrder(sanityOrderId: string, paypalCaptureId: strin
     try {
       await sendVoucherEmail({
         to: order.customerEmail,
+        recipientEmail: order.recipientEmail ?? undefined,
         purchaserName: order.customerName,
-        recipientName: order.recipientName,
+        purchaserFirstName: order.customerFirstName ?? undefined,
+        recipientName: order.recipientName ?? undefined,
         code,
         itemLabel: order.itemName,
         amount: order.amount,
-        message: order.giftMessage,
-        treatmentDescription: order.treatmentDescription,
-        treatmentDuration: order.treatmentDuration,
+        message: order.giftMessage ?? undefined,
+        treatmentDescription: order.treatmentDescription ?? undefined,
+        treatmentDuration: order.treatmentDuration ?? undefined,
       });
       await writeClient.patch(sanityOrderId).set({ emailSent: true }).commit();
     } catch (emailErr) {
