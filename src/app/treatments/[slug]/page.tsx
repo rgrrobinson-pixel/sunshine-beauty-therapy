@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTreatmentDetail } from "@/sanity/queries";
+import { getTreatmentDetail, getTreatments } from "@/sanity/queries";
 import { getTreatmentBySlug, TREATMENT_DETAILS } from "@/lib/treatments";
 import { SITE } from "@/lib/data";
+import GiftVoucherPurchase from "@/components/GiftVoucherPurchase";
 
 export function generateStaticParams() {
   return TREATMENT_DETAILS.map((t) => ({ slug: t.slug }));
@@ -21,7 +22,16 @@ export default async function TreatmentPage({
   if (!local) notFound();
 
   // Rich content (description, inclusions, terms) from Sanity
-  const detail = await getTreatmentDetail(params.slug);
+  const [detail, allTreatments] = await Promise.all([
+    getTreatmentDetail(params.slug),
+    getTreatments(),
+  ]);
+
+  // Find the matching Sanity treatment ID for pre-filling the voucher form
+  const sanityTreatment = allTreatments.find(
+    (t) => t.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") === params.slug ||
+           t.name === local.name
+  );
 
   const bookingUrl = SITE.bookingUrl;
 
@@ -148,12 +158,12 @@ export default async function TreatmentPage({
               >
                 Book this treatment
               </a>
-              <Link
-                href="/#gift-vouchers"
+              <a
+                href="#gift-voucher"
                 className="inline-flex items-center justify-center bg-white/10 hover:bg-white/20 text-white font-semibold px-7 py-3 rounded-full transition-colors border border-white/30 text-sm"
               >
                 Buy as gift voucher
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -166,6 +176,28 @@ export default async function TreatmentPage({
               <li key={term._key}>✦ {term.text}</li>
             ))}
           </ul>
+        </div>
+
+        {/* Gift voucher section */}
+        <div id="gift-voucher" className="mt-10 scroll-mt-8">
+          <div className="mb-4">
+            <p className="text-xs font-semibold tracking-widest uppercase text-[#c49a3a] mb-1">Give the gift of wellness</p>
+            <h2
+              className="text-[#2c4234]"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.6rem", fontWeight: 700 }}
+            >
+              Buy a {local.name} Gift Voucher
+            </h2>
+            <p className="text-sm text-[#5a5850] mt-1">
+              The perfect gift for someone special. Purchase online and receive the voucher by email instantly.
+            </p>
+          </div>
+          <GiftVoucherPurchase
+            treatments={allTreatments}
+            initialOpen={true}
+            initialVoucherType="treatment"
+            initialTreatmentId={sanityTreatment?._id}
+          />
         </div>
 
       </article>
