@@ -11,6 +11,7 @@ export const treatment = defineType({
     defineField({ name: 'tag', title: 'Tag (e.g. Popular)', type: 'string' }),
     defineField({ name: 'description', title: 'Short description', type: 'text' }),
     defineField({ name: 'price', title: 'Price (e.g. A$99)', type: 'string' }),
+    defineField({ name: 'image', title: 'Treatment photo', type: 'image', options: { hotspot: true } }),
   ],
   orderings: [{ name: 'orderAsc', title: 'Display order', by: [{ field: 'order', direction: 'asc' }] }],
 });
