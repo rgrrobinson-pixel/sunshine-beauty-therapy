@@ -8,6 +8,8 @@ type Order = {
   itemName: string;
   amount: number;
   customerName: string;
+  customerFirstName?: string;
+  customerLastName?: string;
   customerEmail: string;
   status: string;
   emailSent: boolean;
@@ -16,6 +18,10 @@ type Order = {
   orderType?: string;
   treatmentName?: string;
   recipientName?: string;
+  recipientFirstName?: string;
+  recipientLastName?: string;
+  recipientEmail?: string;
+  sendToRecipient?: boolean;
   giftMessage?: string;
   billingAddress?: string;
   voucherCode?: string;
@@ -24,12 +30,17 @@ type Order = {
 type Voucher = {
   _id: string;
   code: string;
+  sequenceNumber?: number;
   voucherType: string;
   amount: number;
   treatmentName?: string;
   purchaserName: string;
+  purchaserFirstName?: string;
   purchaserEmail: string;
   recipientName?: string;
+  recipientFirstName?: string;
+  recipientLastName?: string;
+  recipientEmail?: string;
   message?: string;
   status: string;
   purchasedAt: string;
@@ -107,9 +118,17 @@ export default function AdminPage() {
     return orders.filter(o => {
       const matchSearch = !q ||
         o.customerName?.toLowerCase().includes(q) ||
+        o.customerFirstName?.toLowerCase().includes(q) ||
+        o.customerLastName?.toLowerCase().includes(q) ||
         o.customerEmail?.toLowerCase().includes(q) ||
+        o.recipientName?.toLowerCase().includes(q) ||
+        o.recipientFirstName?.toLowerCase().includes(q) ||
+        o.recipientLastName?.toLowerCase().includes(q) ||
+        o.recipientEmail?.toLowerCase().includes(q) ||
         o.itemName?.toLowerCase().includes(q) ||
+        o.treatmentName?.toLowerCase().includes(q) ||
         o.voucherCode?.toLowerCase().includes(q) ||
+        o.createdAt?.slice(0, 10).includes(q) ||
         o._id?.toLowerCase().includes(q);
       const matchStatus = statusFilter === "all" || o.status === statusFilter;
       return matchSearch && matchStatus;
@@ -121,10 +140,16 @@ export default function AdminPage() {
     return vouchers.filter(v => {
       const matchSearch = !q ||
         v.purchaserName?.toLowerCase().includes(q) ||
+        v.purchaserFirstName?.toLowerCase().includes(q) ||
         v.purchaserEmail?.toLowerCase().includes(q) ||
-        v.code?.toLowerCase().includes(q) ||
         v.recipientName?.toLowerCase().includes(q) ||
-        v.treatmentName?.toLowerCase().includes(q);
+        v.recipientFirstName?.toLowerCase().includes(q) ||
+        v.recipientLastName?.toLowerCase().includes(q) ||
+        v.recipientEmail?.toLowerCase().includes(q) ||
+        v.code?.toLowerCase().includes(q) ||
+        String(v.sequenceNumber ?? "").includes(q) ||
+        v.treatmentName?.toLowerCase().includes(q) ||
+        v.purchasedAt?.slice(0, 10).includes(q);
       const matchStatus = statusFilter === "all" || v.status === statusFilter;
       return matchSearch && matchStatus;
     });
@@ -219,7 +244,7 @@ export default function AdminPage() {
         <div className="flex flex-col sm:flex-row gap-3 mb-5">
           <input
             type="text"
-            placeholder={tab === "orders" ? "Search by name, email, voucher code…" : "Search by name, email, code…"}
+            placeholder={tab === "orders" ? "Search by sender, recipient, email, voucher code, date (YYYY-MM-DD)…" : "Search by sender, recipient, email, code, voucher #, date…"}
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="flex-1 border border-[#ddd8ce] rounded-lg px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#4d7355]"
@@ -268,9 +293,11 @@ export default function AdminPage() {
                         <tr key={o._id + "-detail"}>
                           <td colSpan={9} className="bg-[#faf8f5] px-6 py-4 border-b border-[#e8e2d9]">
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs text-[#5a5850]">
-                              <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">Billing address</span><p className="mt-1">{o.billingAddress ?? "—"}</p></div>
-                              <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">Recipient</span><p className="mt-1">{o.recipientName ?? "—"}</p></div>
+                              <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">Recipient name</span><p className="mt-1">{o.recipientName ?? "—"}</p></div>
+                              <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">Recipient email</span><p className="mt-1">{o.recipientEmail ?? "—"}</p></div>
+                              <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">Sent to recipient</span><p className="mt-1">{o.sendToRecipient ? "Yes" : "No — buyer only"}</p></div>
                               <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">Gift message</span><p className="mt-1 italic">{o.giftMessage ?? "—"}</p></div>
+                              <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">Billing address</span><p className="mt-1">{o.billingAddress ?? "—"}</p></div>
                               <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">PayPal order ID</span><p className="mt-1 font-mono break-all">{o.paypalOrderId ?? "—"}</p></div>
                               <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">PayPal capture ID</span><p className="mt-1 font-mono break-all">{o.paypalCaptureId ?? "—"}</p></div>
                               <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">Sanity ID</span><p className="mt-1 font-mono break-all">{o._id}</p></div>
@@ -322,7 +349,9 @@ export default function AdminPage() {
                         <tr key={v._id + "-detail"}>
                           <td colSpan={10} className="bg-[#faf8f5] px-6 py-4 border-b border-[#e8e2d9]">
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs text-[#5a5850]">
+                              <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">Recipient email</span><p className="mt-1">{v.recipientEmail ?? "—"}</p></div>
                               <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">Gift message</span><p className="mt-1 italic">{v.message ?? "—"}</p></div>
+                              <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">Voucher #</span><p className="mt-1 font-mono">{v.sequenceNumber ?? "—"}</p></div>
                               <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">PayPal capture ID</span><p className="mt-1 font-mono break-all">{v.paypalCaptureId ?? "—"}</p></div>
                               <div><span className="font-semibold text-[#8a8880] uppercase tracking-wider">Sanity ID</span><p className="mt-1 font-mono break-all">{v._id}</p></div>
                             </div>
